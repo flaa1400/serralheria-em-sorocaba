@@ -1,0 +1,483 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { SITE_CONFIG } from '../../../data/config';
+import { servicosOferecidos } from '../../../data/servicos';
+import {
+  bairrosAtendidosData,
+  formatBairroSerralheria,
+  formatBairroLocacao,
+  formatBairroServico,
+  type BairroItem
+} from '../../../data/bairros';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return bairrosAtendidosData.map((bairro) => ({
+    params: { bairro: bairro.slug },
+    props: { bairro },
+  }));
+}
+
+interface Props {
+  bairro: BairroItem;
+}
+
+const { bairro } = Astro.props;
+
+const tituloPagina = formatBairroSerralheria(bairro);
+const locacaoTexto = formatBairroLocacao(bairro);
+
+const metaTitle = `${tituloPagina} | ${bairro.destaqueFoco}`;
+const metaDesc = `Serralheiro ${locacaoTexto}. ${bairro.descricaoContexto} Visita técnica sem compromisso e orçamento rápido.`;
+
+// WhatsApp padronizado exatamente igual à Home conforme solicitado
+const whatsappUrlPadrao = SITE_CONFIG.whatsappUrl;
+
+// Interlinking com outros bairros
+const vizinhos = bairrosAtendidosData
+  .filter((b) => b.slug !== bairro.slug)
+  .slice(0, 8);
+---
+
+<Layout title={metaTitle} description={metaDesc}>
+  <main class="bg-slate-50">
+    <!-- BREADCRUMBS -->
+    <nav aria-label="Navegação Estrutural" class="bg-gray-900 border-b border-gray-800 text-xs py-3 text-gray-400">
+      <div class="container mx-auto px-6 md:px-12 flex items-center gap-2">
+        <a href="/" class="hover:text-primary transition-colors">Início</a>
+        <span>/</span>
+        <span class="text-gray-300">Bairros</span>
+        <span>/</span>
+        <span class="text-primary font-bold">{bairro.nome}</span>
+      </div>
+    </nav>
+
+    <!-- ========================================================
+         HERO VARIADO CONFORME O LAYOUT DO BAIRRO (1, 2, 3 ou 4)
+         ======================================================== -->
+
+    {bairro.layoutVariant === 1 && (
+      <!-- LAYOUT 1: HERO IMPACTO MODERNO COM STATS -->
+      <section class="relative bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white py-16 lg:py-24 border-b border-gray-800 overflow-hidden">
+        <div class="container mx-auto px-6 md:px-12 relative z-10 text-center max-w-4xl mx-auto">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full border border-primary/40 shadow-inner mb-6">
+            {bairro.destaqueFoco}
+          </span>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-6">
+            {tituloPagina}
+          </h1>
+          <p class="text-base sm:text-xl text-gray-300 leading-relaxed font-normal max-w-3xl mx-auto mb-10">
+            {bairro.descricaoContexto} Atendimento pontual com projetos estruturados em aço galvanizado e garantia de fábrica.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <a
+              href={whatsappUrlPadrao}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full sm:w-auto inline-flex items-center justify-center px-9 py-5 text-base sm:text-lg font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/25 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <svg class="w-5 h-5 mr-3 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+              Solicitar Orçamento no WhatsApp
+            </a>
+            <a
+              href={`/bairros/${bairro.slug}/servicos`}
+              class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-5 text-base font-bold text-white bg-gray-800 hover:bg-gray-700 rounded-2xl border border-gray-700 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              Catálogo de Serviços em {bairro.nome}
+            </a>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-6 border-t border-gray-800 text-left">
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">100%</span>
+              <span class="text-xs text-gray-400">Aço Galvanizado CSN/Gerdau</span>
+            </div>
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">Zero</span>
+              <span class="text-xs text-gray-400">Taxa de Visita no Bairro</span>
+            </div>
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">4 a 6s</span>
+              <span class="text-xs text-gray-400">Velocidade dos Motores</span>
+            </div>
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">+15 Anos</span>
+              <span class="text-xs text-gray-400">Experiência em Sorocaba</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {bairro.layoutVariant === 2 && (
+      <!-- LAYOUT 2: HERO TÉCNICO ESTRUTURAL COM SPLIT VISUAL -->
+      <section class="relative bg-gradient-to-br from-slate-950 via-gray-900 to-zinc-950 text-white py-16 lg:py-24 border-b border-gray-800">
+        <div class="container mx-auto px-6 md:px-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
+            <div class="lg:col-span-7 space-y-6">
+              <span class="inline-block py-1 px-3.5 bg-amber-400/20 text-primary font-bold text-xs uppercase tracking-wider rounded-lg border border-primary/30">
+                Engenharia de Precisão & Serralheria
+              </span>
+              <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                {tituloPagina}
+              </h1>
+              <p class="text-base sm:text-lg text-gray-300 leading-relaxed font-normal">
+                {bairro.descricaoContexto} Fabricação milimétrica em gabarito com acabamento anticorrosivo de alta aderência.
+              </p>
+              <div class="pt-2 flex flex-wrap gap-4">
+                <a
+                  href={whatsappUrlPadrao}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center px-8 py-4 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                >
+                  Orçamento com Técnico no WhatsApp
+                </a>
+                <a
+                  href={`/bairros/${bairro.slug}/servicos`}
+                  class="inline-flex items-center justify-center px-6 py-4 text-sm font-bold text-gray-200 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all"
+                >
+                  Ver Serviços
+                </a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 bg-gray-900/80 border border-gray-800 rounded-3xl p-8 space-y-5">
+              <h3 class="text-lg font-black text-white border-b border-gray-800 pb-3 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                Atendimento Técnico {locacaoTexto}
+              </h3>
+              <ul class="space-y-3.5 text-sm text-gray-300">
+                <li class="flex items-start gap-3">
+                  <span class="text-primary font-bold">✓</span>
+                  <span>Medição sem compromisso em {bairro.nome}</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-primary font-bold">✓</span>
+                  <span>Solda MIG/MAG industrial com alta penetração</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-primary font-bold">✓</span>
+                  <span>Pintura especial com fundo fosfatizante</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="text-primary font-bold">✓</span>
+                  <span>Contratos formais com garantia estrutural</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {bairro.layoutVariant === 3 && (
+      <!-- LAYOUT 3: HERO RESIDENCIAL & VALORIZAÇÃO DA FACHADA -->
+      <section class="relative bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900 text-white py-16 lg:py-24 border-b border-gray-800 text-center">
+        <div class="container mx-auto px-6 md:px-12 max-w-4xl">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-black uppercase tracking-wider mb-6">
+            <span>🏡</span> Segurança Residencial & Comercial
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-6">
+            {tituloPagina}
+          </h1>
+          <p class="text-base sm:text-xl text-gray-300 leading-relaxed font-normal max-w-2xl mx-auto mb-8">
+            {bairro.descricaoContexto} Modernize a fachada do seu imóvel com segurança reforçada, motores silenciosos e design sob medida.
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href={whatsappUrlPadrao}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-9 py-4 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/25 hover:scale-105 active:scale-95 transition-all"
+            >
+              Falar no WhatsApp
+            </a>
+            <a
+              href={`/bairros/${bairro.slug}/servicos`}
+              class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-gray-200 bg-gray-800 hover:bg-gray-700 rounded-2xl border border-gray-700 transition-all"
+            >
+              Catálogo de Modelos
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {bairro.layoutVariant === 4 && (
+      <!-- LAYOUT 4: HERO COMERCIAL & AGILIDADE EM OBRAS -->
+      <section class="relative bg-gradient-to-r from-gray-950 via-slate-900 to-gray-950 text-white py-16 lg:py-24 border-b border-gray-800">
+        <div class="container mx-auto px-6 md:px-12 text-center max-w-4xl">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full border border-primary/40 mb-6">
+            Serralheria Ágil em Sorocaba
+          </span>
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-6">
+            {tituloPagina}
+          </h1>
+          <p class="text-base sm:text-lg text-gray-300 leading-relaxed font-normal max-w-3xl mx-auto mb-8">
+            {bairro.descricaoContexto} Projetos sob encomenda com entrega no prazo e equipe especializada para montagem sem dores de cabeça.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a
+              href={whatsappUrlPadrao}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-8 py-4 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+            >
+              Pedir Orçamento Agora
+            </a>
+            <a
+              href={`/bairros/${bairro.slug}/servicos`}
+              class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-gray-800 hover:bg-gray-700 rounded-2xl border border-gray-700 transition-all"
+            >
+              Serviços em {bairro.nome}
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ========================================================
+         SEÇÃO INTERMEDIÁRIA VARIADA (ETAPAS OU TABELA CONFORME LAYOUT)
+         ======================================================== -->
+
+    {bairro.layoutVariant === 2 && (
+      <!-- PROCESSO EM 4 ETAPAS PARA O LAYOUT 2 -->
+      <section class="py-16 bg-white border-b border-gray-200">
+        <div class="container mx-auto px-6 md:px-12">
+          <div class="max-w-4xl mx-auto text-center mb-12">
+            <h2 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+              Nosso Fluxo de Execução Técnica {locacaoTexto}
+            </h2>
+            <p class="text-sm sm:text-base text-gray-600 mt-2 font-normal">
+              Controle rigoroso de ponta a ponta para que sua peça chegue pronta e perfeitamente ajustada.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-2">
+              <span class="text-primary font-black text-xl">01</span>
+              <h3 class="font-bold text-gray-900 text-base">Medição in Loco</h3>
+              <p class="text-xs text-gray-600">Conferência milimétrica de vãos, prumos e pontos de fixação em {bairro.nome}.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-2">
+              <span class="text-primary font-black text-xl">02</span>
+              <h3 class="font-bold text-gray-900 text-base">Corte & Soldagem</h3>
+              <p class="text-xs text-gray-600">Corte esquadrejado e solda MIG/MAG industrial contínua de alta penetração.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-2">
+              <span class="text-primary font-black text-xl">03</span>
+              <h3 class="font-bold text-gray-900 text-base">Primer Antiferrugem</h3>
+              <p class="text-xs text-gray-600">Tratamento químico com fundo fosfatizante antes da pintura final.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-2">
+              <span class="text-primary font-black text-xl">04</span>
+              <h3 class="font-bold text-gray-900 text-base">Instalação & Testes</h3>
+              <p class="text-xs text-gray-600">Montagem rápida e teste de balanceamento e motores no seu imóvel.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {bairro.layoutVariant === 3 && (
+      <!-- TABELA COMPARATIVA PARA O LAYOUT 3 -->
+      <section class="py-16 bg-white border-b border-gray-200">
+        <div class="container mx-auto px-6 md:px-12 max-w-4xl">
+          <div class="text-center mb-10">
+            <h2 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+              Comparativo Técnico: Por que escolher nossa Serralheria?
+            </h2>
+          </div>
+          <div class="overflow-x-auto rounded-2xl border border-gray-200">
+            <table class="w-full text-left text-sm text-gray-600">
+              <thead class="bg-gray-900 text-white text-xs uppercase">
+                <tr>
+                  <th class="p-4">Critério Construtivo</th>
+                  <th class="p-4 text-primary font-bold">Nossa Serralheria {locacaoTexto}</th>
+                  <th class="p-4 text-gray-400">Oficinas Convencionais</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <tr>
+                  <td class="p-4 font-semibold text-gray-900">Matéria-Prima</td>
+                  <td class="p-4 font-bold text-green-700">Aço 100% Galvanizado Gerdau/CSN</td>
+                  <td class="p-4 text-gray-500">Ferro preto sem galvanização</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-semibold text-gray-900">Soldagem</td>
+                  <td class="p-4 font-bold text-green-700">MIG industrial contínua e desbastada</td>
+                  <td class="p-4 text-gray-500">Ponto a ponto com rebarbas</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-semibold text-gray-900">Tratamento Anticorrosivo</td>
+                  <td class="p-4 font-bold text-green-700">Primer fosfatizante + acabamento automotivo</td>
+                  <td class="p-4 text-gray-500">Zarcão simples de baixa ancoragem</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-semibold text-gray-900">Taxa de Visita no Bairro</td>
+                  <td class="p-4 font-bold text-green-700">Gratuita e sem compromisso</td>
+                  <td class="p-4 text-gray-500">Cobram taxa de deslocamento</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ========================================================
+         GRADE DE SERVIÇOS NO BAIRRO (COM LINKS PARA [servico].astro)
+         ======================================================== -->
+    <section class="py-20 lg:py-28 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-3xl mb-16">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-accent font-black text-xs uppercase tracking-widest rounded-full mb-4 border border-primary/40">
+            Catálogo em {bairro.nome}
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+            Serviços de Serralheria {locacaoTexto}
+          </h2>
+          <p class="text-base sm:text-lg text-gray-600 mt-4 leading-relaxed font-normal">
+            Escolha o serviço desejado para conferir especificações e prazos de atendimento para {bairro.nome}:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {servicosOferecidos.map((servico) => {
+            const servicoTituloBairro = formatBairroServico(servico.nome, bairro);
+            const linkServicoBairro = `/bairros/${bairro.slug}/servicos/${servico.slug}`;
+
+            return (
+              <div class="bg-white rounded-3xl border border-gray-200/90 hover:border-primary p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div>
+                  <div class="w-14 h-14 rounded-2xl bg-amber-100/60 border border-amber-200 flex items-center justify-center mb-6 shadow-sm">
+                    <Fragment set:html={servico.svg} />
+                  </div>
+                  <h3 class="text-xl sm:text-2xl font-black text-gray-900 mb-3 tracking-tight">
+                    {servicoTituloBairro}
+                  </h3>
+                  <p class="text-sm sm:text-base text-gray-600 leading-relaxed mb-6 font-normal">
+                    {servico.descricao}
+                  </p>
+                </div>
+
+                <div class="pt-6 border-t border-gray-100 flex items-center justify-between">
+                  <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    {bairro.nome}
+                  </span>
+                  <a
+                    href={linkServicoBairro}
+                    class="inline-flex items-center gap-1.5 text-xs font-black text-accent bg-primary hover:bg-yellow-400 px-4 py-2.5 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95"
+                  >
+                    Saiba Mais
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div class="mt-16 text-center">
+          <a
+            href={`/bairros/${bairro.slug}/servicos`}
+            class="inline-flex items-center justify-center px-10 py-5 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 transition-all duration-300"
+          >
+            Acessar Catálogo Completo de Serviços {locacaoTexto}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SEÇÃO DE FAQS ESPECÍFICAS DO BAIRRO E SEU PERFIL
+         ======================================================== -->
+    <section class="py-16 lg:py-24 bg-white border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12 max-w-4xl">
+        <div class="text-center mb-12">
+          <span class="inline-block py-1 px-3.5 bg-primary/20 text-accent font-bold text-xs uppercase tracking-wider rounded-full mb-3">
+            Dúvidas Frequentes
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
+            Perguntas Frequentes sobre Serralheria {locacaoTexto}
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+          {bairro.faqs.map((faq) => (
+            <div class="bg-gray-50 rounded-2xl border border-gray-200 p-6 sm:p-8 space-y-2">
+              <h3 class="text-base sm:text-lg font-black text-gray-900">
+                {faq.q}
+              </h3>
+              <p class="text-sm sm:text-base text-gray-600 leading-relaxed font-normal">
+                {faq.a}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         CTA FINAL WHATSAPP (MENSAGEM PADRÃO DA HOME)
+         ======================================================== -->
+    <section class="py-16 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white text-center border-b border-gray-800">
+      <div class="container mx-auto px-6 md:px-12 max-w-3xl space-y-6">
+        <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white">
+          Precisa de Serralheiro {locacaoTexto}?
+        </h2>
+        <p class="text-gray-300 text-sm sm:text-base leading-relaxed font-normal">
+          Converse diretamente com nossa equipe técnica pelo WhatsApp e agende uma visita no local sem compromisso.
+        </p>
+        <div>
+          <a
+            href={whatsappUrlPadrao}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center px-10 py-5 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/25 hover:scale-105 active:scale-95 transition-all duration-300"
+          >
+            Peça seu Orçamento no Whatsapp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERLINKING COM OUTROS BAIRROS -->
+    <section class="py-16 bg-slate-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-4xl mx-auto text-center mb-8">
+          <h3 class="text-xl font-black text-gray-900">
+            Outros Bairros Atendidos em Sorocaba
+          </h3>
+          <p class="text-sm text-gray-500 mt-2">
+            Além de {bairro.nome}, também realizamos visitas técnicas e instalações em toda a região:
+          </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+          {vizinhos.map((v) => (
+            <a
+              href={`/bairros/${v.slug}`}
+              class="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 hover:border-primary hover:text-secondary hover:scale-105 active:scale-95 transition-all shadow-sm"
+            >
+              <span>📍 {v.nome}</span>
+            </a>
+          ))}
+          <a
+            href="/"
+            class="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-primary/20 border border-primary/40 text-accent hover:bg-primary transition-all"
+          >
+            Ver Todos os 94 Bairros &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

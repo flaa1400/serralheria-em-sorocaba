@@ -1,0 +1,67 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
+import SchemaLocalBusiness from '../components/SchemaLocalBusiness.astro';
+import WhatsAppBtn from '../components/WhatsAppBtn.astro';
+import { SITE_CONFIG } from '../data/config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  ogImage,
+  type = 'website',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Google Sitemap Auto-discovery -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Componente SEO Centralizado (Meta tags, Open Graph, Geo Tags) -->
+    <SEO
+      title={title}
+      description={description}
+      canonicalUrl={canonicalUrl}
+      ogImage={ogImage}
+      type={type}
+    />
+
+    <!-- Schema.org JSON-LD LocalBusiness para Ranqueamento no Google Maps -->
+    <SchemaLocalBusiness />
+
+    <!-- Otimização de Fontes: Inter com preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-white text-gray-900 font-sans antialiased selection:bg-primary selection:text-gray-950 flex flex-col relative">
+    <Header />
+    <div class="flex-1">
+      <slot />
+    </div>
+    <Footer />
+
+    <!-- Botão WhatsApp Flutuante Oficial -->
+    <WhatsAppBtn />
+  </body>
+</html>

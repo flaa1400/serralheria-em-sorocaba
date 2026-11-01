@@ -1,0 +1,188 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE_CONFIG } from '../data/config';
+---
+
+<Layout
+  title={`Termos de Uso | ${SITE_CONFIG.businessName}`}
+  description={`Termos e Condições Gerais de Uso do site da ${SITE_CONFIG.businessName}. Conheça as diretrizes para navegação, solicitação de orçamentos e contratação de serviços.`}
+>
+  <main class="bg-slate-50">
+    <!-- HERO TERMOS DE USO (Dark Hero de Alto Padrão) -->
+    <section class="relative bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white py-16 lg:py-24 border-b border-gray-800 overflow-hidden">
+      <div class="container mx-auto px-6 md:px-12 relative z-10 text-center max-w-4xl mx-auto">
+        <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full border border-primary/40 shadow-inner mb-6">
+          Diretrizes Contratuais & Navegação
+        </span>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-6">
+          Termos de Uso do Site
+        </h1>
+        <p class="text-base sm:text-xl text-gray-300 leading-relaxed font-normal max-w-2xl mx-auto">
+          Condições gerais para acesso ao website, consulta de serviços técnicos de serralheria e solicitação de propostas comerciais.
+        </p>
+      </div>
+    </section>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <section class="py-16 lg:py-24 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-4xl mx-auto bg-white rounded-3xl border border-gray-200/90 p-8 sm:p-14 shadow-sm space-y-10">
+
+          <!-- Bloco Informativo de Abertura -->
+          <div class="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-6 sm:p-8">
+            <p class="text-sm sm:text-base text-gray-800 leading-relaxed">
+              Bem-vindo ao canal digital oficial da <strong>{SITE_CONFIG.legalName}</strong> (nome fantasia <strong>{SITE_CONFIG.businessName}</strong>). Ao navegar neste website, acessar conteúdos técnicos ou solicitar orçamentos por nossos canais integrados, você declara concordar integralmente com as diretrizes e regras aqui estipuladas.
+            </p>
+          </div>
+
+          <!-- 1. Objeto do Website -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">1</span>
+              Objeto e Finalidade do Site
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Este website destina-se a apresentar ao público o portfólio institucional, especificações técnicas, materiais construtivos e serviços especializados de serralheria, estruturas metálicas, portões automáticos, mezaninos, coberturas e reparos prestados pela <strong>{SITE_CONFIG.businessName}</strong> em Sorocaba, Votorantim e região metropolitana.
+            </p>
+          </div>
+
+          <!-- 2. Orçamentos e Estimativas de Valores -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">2</span>
+              Orçamentos, Medições e Estimativas Técnicas
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Devido à natureza personalizada da fabricação sob medida de peças e estruturas metálicas:
+            </p>
+            <ul class="list-disc pl-6 space-y-2 text-sm sm:text-base text-gray-600">
+              <li>Valores, prazos ou dimensões informados de forma preliminar por telefone, formulário ou WhatsApp têm caráter estritamente estimativo e orientativo;</li>
+              <li>A formalização definitiva do valor e cronograma da obra ocorre unicamente após a <strong>visita técnica presencial</strong> no imóvel para medição precisa dos vãos, avaliação de prumos, ancoragens e definição dos materiais;</li>
+              <li>A proposta comercial definitiva terá validade pelo prazo estipulado formalmente no documento de orçamento emitido pela nossa equipe técnica.</li>
+            </ul>
+          </div>
+
+          <!-- 3. Normas Técnicas e Padrões de Segurança -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">3</span>
+              Conformidade com Normas Construtivas (ABNT)
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              A <strong>{SITE_CONFIG.businessName}</strong> executa suas obras e produtos em conformidade com as diretrizes e normas de segurança vigentes no Brasil, incluindo:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div class="border border-gray-100 rounded-2xl p-5 bg-gray-50/50 space-y-2">
+                <h3 class="font-bold text-gray-900 text-sm">Estruturas e Guarda-Corpos:</h3>
+                <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  Projetos de mezaninos, escadas e guarda-corpos seguem as diretrizes da norma <strong>ABNT NBR 14718</strong> (Guarda-corpos para edificações) e normas aplicáveis a estruturas em aço soldado e parafusado.
+                </p>
+              </div>
+              <div class="border border-gray-100 rounded-2xl p-5 bg-gray-50/50 space-y-2">
+                <h3 class="font-bold text-gray-900 text-sm">Motores e Automatização:</h3>
+                <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  Motores e centrais eletrônicas instalados possuem certificação compulsória do <strong>INMETRO</strong>, com sistemas de reversão de emergência e dispositivos antichoque e antiesmagamento.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Propriedade Intelectual -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">4</span>
+              Direitos de Propriedade Intelectual
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Todo o conteúdo deste website — incluindo textos descritivos, logotipos, ilustrações, marcas registradas, fotografias de obras realizadas, elementos gráficos e código-fonte — é de propriedade exclusiva da <strong>{SITE_CONFIG.legalName}</strong> ou foi licenciado para o seu uso legítimo.
+            </p>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              É terminantemente vedada a reprodução total ou parcial, cópia de fotos para portfólios concorrentes, extração automatizada de dados (web scraping) ou engenharia reversa sem autorização prévia por escrito.
+            </p>
+          </div>
+
+          <!-- 5. Responsabilidades do Usuário -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">5</span>
+              Obrigações e Responsabilidades do Usuário
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Ao utilizar este canal digital e solicitar atendimentos, você concorda em:
+            </p>
+            <ul class="list-disc pl-6 space-y-2 text-sm sm:text-base text-gray-600">
+              <li>Fornecer dados cadastrais, telefones e endereços verídicos para contato e vistoria;</li>
+              <li>Não utilizar formulários para envio de mensagens com teor fraudulento, vírus ou spam;</li>
+              <li>Assegurar que o local informado possui autorização do proprietário ou condomínio para a realização de vistorias técnicas e eventuais instalações mecânicas.</li>
+            </ul>
+          </div>
+
+          <!-- 6. Links para Terceiros -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">6</span>
+              Canais e Links de Terceiros
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Nosso website disponibiliza links de contato direto com serviços externos, notadamente o <strong>WhatsApp</strong> (Meta Platforms Inc.), Instagram e Google Maps. A {SITE_CONFIG.businessName} não tem controle nem se responsabiliza pelos termos de uso, políticas de dados ou disponibilidade contínua dessas plataformas de terceiros.
+            </p>
+          </div>
+
+          <!-- 7. Limitação de Responsabilidade -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">7</span>
+              Limitação de Responsabilidade
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Empregamos as melhores práticas técnicas para assegurar a disponibilidade contínua do portal. No entanto, não respondemos por eventuais indisponibilidades temporárias decorrentes de manutenções no servidor, falhas de conectividade de operadoras ou casos fortuitos e de força maior.
+            </p>
+          </div>
+
+          <!-- 8. Legislação Aplicável e Foro -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">8</span>
+              Legislação Aplicável e Foro de Eleição
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Estes Termos de Uso são regidos e interpretados de acordo com a legislação da República Federativa do Brasil, em especial o Marco Civil da Internet (Lei nº 12.965/2014) e o Código de Defesa do Consumidor (Lei nº 8.078/1990).
+            </p>
+            <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+              Fica eleita a <strong>Comarca de Sorocaba, Estado de São Paulo</strong>, como competente para dirimir quaisquer controvérsias decorrentes destes Termos ou da utilização deste website.
+            </p>
+          </div>
+
+          <!-- 9. Informações de Contato -->
+          <div class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-primary/20 text-accent font-black text-sm flex items-center justify-center shrink-0">9</span>
+              Canais Oficiais de Atendimento
+            </h2>
+            <div class="bg-gray-900 text-white rounded-2xl p-6 sm:p-8 space-y-3">
+              <p class="text-sm sm:text-base font-semibold">
+                {SITE_CONFIG.legalName}
+              </p>
+              <p class="text-sm text-gray-300">
+                <strong>Endereço:</strong> {SITE_CONFIG.address.fullAddress}
+              </p>
+              <p class="text-sm text-gray-300">
+                <strong>WhatsApp Técnico:</strong> <a href={SITE_CONFIG.whatsappUrl} target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">{SITE_CONFIG.whatsapp}</a>
+              </p>
+              <p class="text-sm text-gray-300">
+                <strong>E-mail Institucional:</strong> {SITE_CONFIG.email}
+              </p>
+            </div>
+          </div>
+
+          <!-- Rodapé do Card -->
+          <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs sm:text-sm text-gray-500 gap-4">
+            <span>Dúvidas contratuais podem ser encaminhadas diretamente ao nosso canal de suporte.</span>
+            <span class="font-bold text-gray-700 whitespace-nowrap">Última atualização: Outubro de 2026</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

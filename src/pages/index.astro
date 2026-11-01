@@ -1,0 +1,754 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE_CONFIG } from '../data/config';
+import { servicosOferecidos } from '../data/servicos';
+import { bairrosAtendidosData, formatBairroLocacao } from '../data/bairros';
+
+// Perguntas Frequentes (Seção 6)
+const faqs = [
+  {
+    pergunta: "Qual é o prazo médio para fabricação e instalação de um portão?",
+    resposta: "O prazo médio varia de 10 a 20 dias úteis a depender das dimensões e acabamento escolhido. Já para serviços de manutenção e pequenos reparos de solda, o atendimento costuma ser realizado no mesmo dia ou em até 24 horas."
+  },
+  {
+    pergunta: "A visita técnica e o orçamento têm custo em Sorocaba?",
+    resposta: "Não! Realizamos visita técnica sem compromisso em todos os bairros de Sorocaba e Votorantim para tirar as medidas exatas e avaliar a melhor solução para sua necessidade."
+  },
+  {
+    pergunta: "Vocês atendem chamados emergenciais para portão travado ou quebrado?",
+    resposta: "Sim, contamos com atendimento rápido para reparos de cabos rompidos, motores inoperantes e portões caídos, garantindo a segurança imediata do seu imóvel."
+  },
+  {
+    pergunta: "Quais são as formas de pagamento disponíveis?",
+    resposta: "Facilitamos o pagamento de forma flexível e transparente de acordo com o projeto, combinando as condições diretamente no fechamento do seu orçamento."
+  },
+  {
+    pergunta: "O material utilizado possui proteção contra corrosão e ferrugem?",
+    resposta: "Sim. Trabalhamos exclusivamente com aço galvanizado de usinas certificadas, aplicação de fundo primer antiferrugem e solda reforçada de alta penetração."
+  },
+  {
+    pergunta: "Vocês fabricam modelos personalizados de acordo com projeto arquitetônico?",
+    resposta: "Com certeza! Executamos fielmente plantas de arquitetos e projetos autorais, incluindo detalhes em madeira, chapas perfuradas, vidro temperado e cortes especiais a laser."
+  }
+];
+
+// Avaliações de Clientes (Seção 7)
+const avaliacoes = [
+  {
+    nome: "Ricardo Silveira",
+    bairro: "Parque Campolim, Sorocaba",
+    servico: "Portão Basculante Automático",
+    texto: "Excelente trabalho! O portão basculante foi entregue antes do prazo, funciona de forma muito silenciosa e a pintura ficou impecável. Recomendo de olhos fechados.",
+    estrelas: 5,
+    tempo: "Há 1 semana"
+  },
+  {
+    nome: "Juliana Mendes",
+    bairro: "Wanel Ville, Sorocaba",
+    servico: "Grades de Proteção e Guarda-Corpo",
+    texto: "Equipe pontual e educada. Fizeram a medição no mesmo dia que chamei no WhatsApp e instalaram as grades com acabamento perfeito. Preço muito justo.",
+    estrelas: 5,
+    tempo: "Há 3 semanas"
+  },
+  {
+    nome: "Marcos Vinícius Barbosa",
+    bairro: "Jardim Santa Rosália, Sorocaba",
+    servico: "Estrutura Metálica para Cobertura",
+    texto: "Contratei a estrutura para a cobertura da área de lazer da minha casa. Material de primeira qualidade e solda muito bem feita. Serralheiro de confiança em Sorocaba!",
+    estrelas: 5,
+    tempo: "Há 1 mês"
+  },
+  {
+    nome: "Patrícia Antunes",
+    bairro: "Granja Olga, Sorocaba",
+    servico: "Manutenção de Portão Eletrônico",
+    texto: "Meu portão quebrou o cabo de aço à noite e no início da manhã seguinte já vieram e resolveram tudo. Atendimento rápido e muito eficiente.",
+    estrelas: 5,
+    tempo: "Há 2 semanas"
+  },
+  {
+    nome: "Eduardo Camargo",
+    bairro: "Jardim Simus, Sorocaba",
+    servico: "Mezanino e Portão de Ferro",
+    texto: "Fizeram o mezanino da minha oficina e reformaram o portão de ferro. Estrutura extremamente firme e segura. Profissionais de primeira!",
+    estrelas: 5,
+    tempo: "Há 1 mês"
+  },
+  {
+    nome: "Fernanda Toledo",
+    bairro: "Centro de Sorocaba",
+    servico: "Conserto de Portão de Ferro",
+    texto: "Excelente experiência do atendimento inicial ao término do serviço. Orçamento detalhado, sem surpresas e serviço nota 10.",
+    estrelas: 5,
+    tempo: "Há 1 mês"
+  }
+];
+
+// Lista Completa de Bairros Atendidos (Seção 8 - 94 Bairros Estruturados)
+const bairrosAtendidos = bairrosAtendidosData;
+
+// Schema FAQPage para Rich Snippets no Google
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((f) => ({
+    "@type": "Question",
+    "name": f.pergunta,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.resposta
+    }
+  }))
+};
+---
+
+<Layout
+  title="Serralheria em Sorocaba | Portões e Grades - Aço na Medida"
+  description="Procurando serralheria em Sorocaba? Fabricamos portão de ferro, modelos automáticos, mezaninos e solda. Visita técnica rápida e orçamento sem compromisso."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <main class="overflow-hidden">
+
+    <!-- ==========================================
+         SEÇÃO 1: HERO LIMPO E ESSENCIAL (FUNDO CINZA ESCURO COM DEGRADÊ)
+         ========================================== -->
+    <section class="relative py-20 lg:py-28 bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900 text-white overflow-hidden border-b border-gray-800">
+      <div class="container mx-auto px-6 md:px-12 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+
+          <!-- H1: Serralheria em Sorocaba -->
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-6">
+            Serralheria em Sorocaba
+          </h1>
+
+          <!-- Texto sobre serviços e atendimento na região (sem negrito nas palavras-chave) -->
+          <p class="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed mb-10 max-w-2xl mx-auto font-normal">
+            Se você busca serralheria em Sorocaba, nosso time conta com portão de ferro, modelos automáticos, basculantes, grades e coberturas sob medida. Atendimento ágil em bairros como Campolim, Wanel Ville, Santa Rosália e região, com visita técnica sem compromisso.
+          </p>
+
+          <!-- Botão Principal de Conversão Direta -->
+          <div class="flex justify-center">
+            <a
+              href={SITE_CONFIG.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-9 py-5 text-base sm:text-lg font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-300 text-center"
+            >
+              <svg class="w-6 h-6 mr-3 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+              Peça seu Orçamento no Whatsapp
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         SEÇÃO 2: SERVIÇOS OFERECIDOS (EXATOS 14 ITENS)
+         ========================================== -->
+    <section id="servicos" class="py-24 lg:py-32 bg-gray-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-3xl mb-16">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-accent font-black text-xs uppercase tracking-widest rounded-full mb-4 border border-primary/40">
+            Catálogo Completo
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+            Serviços Oferecidos de Serralheria em Sorocaba
+          </h2>
+          <p class="text-base sm:text-lg text-gray-600 mt-4 leading-relaxed">
+            Soluções completas do projeto à montagem final, com materiais de alta resistência, precisão dimensional e alto padrão de acabamento.
+          </p>
+        </div>
+
+        <!-- Grade com os serviços oferecidos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {servicosOferecidos.map((servico) => (
+            <div class="bg-white rounded-3xl border border-gray-200 p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:shadow-xl hover:border-primary hover:-translate-y-1 transition-all duration-300">
+              <div>
+                <div class="w-14 h-14 rounded-2xl bg-amber-100/60 border border-amber-200 flex items-center justify-center mb-6 shadow-sm">
+                  <Fragment set:html={servico.svg} />
+                </div>
+                <h3 class="text-xl sm:text-2xl font-black text-gray-900 mb-3 tracking-tight">
+                  {servico.nome}
+                </h3>
+                <p class="text-sm sm:text-base text-gray-600 leading-relaxed mb-6">
+                  {servico.descricao}
+                </p>
+              </div>
+
+              <div class="pt-6 border-t border-gray-100 flex items-center justify-between">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Sorocaba e Região
+                </span>
+                {servico.slug ? (
+                  <a
+                    href={`/servicos/${servico.slug}`}
+                    class="inline-flex items-center gap-1.5 text-xs font-black text-accent bg-primary hover:bg-yellow-400 px-4 py-2.5 rounded-xl transition-all shadow-sm hover:scale-105"
+                  >
+                    Saiba Mais
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </a>
+                ) : (
+                  <a
+                    href={SITE_CONFIG.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-xs font-black text-accent bg-primary hover:bg-yellow-400 px-4 py-2.5 rounded-xl transition-all shadow-sm hover:scale-105"
+                  >
+                    Pedir Orçamento
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-16 text-center">
+          <a
+            href={SITE_CONFIG.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center px-10 py-5 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 transition-all duration-300"
+          >
+            Peça seu Orçamento no Whatsapp
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         SEÇÃO 3: POR QUE SOMOS A MELHOR SERRALHERIA + "SERRALHEIROS PERTO DE MIM"
+         ========================================== -->
+    <section class="py-24 lg:py-32 bg-white border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-4xl mx-auto">
+          
+          <div class="text-center mb-16">
+            <span class="inline-block py-1.5 px-4 bg-secondary/10 text-secondary font-black text-xs uppercase tracking-widest rounded-full mb-4">
+              Autoridade e Qualidade
+            </span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight mb-6">
+              Por que somos a melhor Serralheria em Sorocaba?
+            </h2>
+            <p class="text-base sm:text-xl text-gray-700 leading-relaxed font-normal">
+              Quando você pesquisa por Serralheiros perto de mim em Sorocaba, você procura agilidade, segurança e compromisso de verdade. Nossa empresa combina décadas de know-how técnico em metalurgia com maquinário moderno de corte e solda.
+            </p>
+          </div>
+
+          <!-- 4 Pilares da Superioridade Técnica -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-gray-50 rounded-3xl p-8 sm:p-10 border border-gray-200 hover:border-secondary transition-all">
+              <div class="w-12 h-12 rounded-xl bg-secondary text-primary font-black text-xl flex items-center justify-center mb-6">
+                01
+              </div>
+              <h3 class="text-xl font-black text-gray-900 mb-3 tracking-tight">
+                Aço 100% Galvanizado e Certificado
+              </h3>
+              <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Não utilizamos sucatas ou ferros de segunda linha. Toda estrutura é feita com perfis de parede espessa e recebe tratamento fosfatizante e primer epóxi contra maresia e corrosão.
+              </p>
+            </div>
+
+            <div class="bg-gray-50 rounded-3xl p-8 sm:p-10 border border-gray-200 hover:border-secondary transition-all">
+              <div class="w-12 h-12 rounded-xl bg-secondary text-primary font-black text-xl flex items-center justify-center mb-6">
+                02
+              </div>
+              <h3 class="text-xl font-black text-gray-900 mb-3 tracking-tight">
+                Soldadores e Técnicos Especializados
+              </h3>
+              <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Nossa equipe domina técnicas avançadas de soldagem MIG/MAG e TIG. O resultado são juntas niveladas, solda com penetração perfeita e acabamento estético sem rebarbas.
+              </p>
+            </div>
+
+            <div class="bg-gray-50 rounded-3xl p-8 sm:p-10 border border-gray-200 hover:border-secondary transition-all">
+              <div class="w-12 h-12 rounded-xl bg-secondary text-primary font-black text-xl flex items-center justify-center mb-6">
+                03
+              </div>
+              <h3 class="text-xl font-black text-gray-900 mb-3 tracking-tight">
+                Fabricação Sob Medida Sem Desperdício
+              </h3>
+              <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Seja um portão com abertura milimétrica ou um mezanino comercial de grandes vãos, cada peça é calculada para se ajustar com precisão ao seu espaço, garantindo economia.
+              </p>
+            </div>
+
+            <div class="bg-gray-50 rounded-3xl p-8 sm:p-10 border border-gray-200 hover:border-secondary transition-all">
+              <div class="w-12 h-12 rounded-xl bg-secondary text-primary font-black text-xl flex items-center justify-center mb-6">
+                04
+              </div>
+              <h3 class="text-xl font-black text-gray-900 mb-3 tracking-tight">
+                Cumprimento Rigoroso de Prazos
+              </h3>
+              <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                Respeitamos seu cronograma de obra. Estabelecemos data de entrega transparente e combinada, mantendo você informado em cada etapa da produção.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bloco de fechamento da seção 3 -->
+          <div class="bg-gradient-to-r from-gray-900 via-secondary to-gray-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="space-y-2 text-center md:text-left">
+              <h4 class="text-2xl font-black tracking-tight">
+                Procurando serralheiros perto de mim em Sorocaba?
+              </h4>
+              <p class="text-gray-200 text-sm sm:text-base max-w-xl">
+                Nossas unidades móveis cobrem prontamente todas as zonas da cidade com ferramental completo para medição e orçamento na hora.
+              </p>
+            </div>
+            <a
+              href={SITE_CONFIG.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-8 py-4 font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shrink-0 transition-transform hover:scale-105 active:scale-95 shadow-lg"
+            >
+              Agendar Visita Agora
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         SEÇÃO 4: VANTAGENS DE CONTRATAR SERRALHEIROS PERTO DE MIM EM SOROCABA
+         ========================================== -->
+    <section class="py-24 lg:py-32 bg-gray-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-4xl mx-auto">
+          
+          <div class="mb-16">
+            <span class="inline-block py-1.5 px-4 bg-primary/20 text-accent font-black text-xs uppercase tracking-widest rounded-full mb-4">
+              Benefícios Práticos
+            </span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight mb-6">
+              Vantagens de contratar Serralheiros perto de mim em Sorocaba
+            </h2>
+            <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
+              Optar por uma serralheria local e consolidada em Sorocaba traz inúmeros benefícios práticos, financeiros e de segurança para sua obra ou reforma. Veja os principais motivos:
+            </p>
+          </div>
+
+          <!-- Lista de Motivos Estruturados com Variações de Serviços Específicos -->
+          <div class="space-y-6">
+
+            <div class="bg-white rounded-3xl p-8 sm:p-10 border border-gray-200 flex flex-col sm:flex-row gap-6 items-start shadow-sm hover:shadow-md transition-all">
+              <div class="w-14 h-14 rounded-2xl bg-amber-100 text-accent flex items-center justify-center text-2xl shrink-0 font-black">
+                🚀
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">
+                  1. Medição técnica rápida para portão de ferro e esquadrias
+                </h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                  Por estarmos perto de você em Sorocaba, nosso técnico comparece rapidamente ao seu endereço residencial, condomínio ou galpão. A medição presencial elimina surpresas e garante o encaixe perfeito na hora da montagem.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 sm:p-10 border border-gray-200 flex flex-col sm:flex-row gap-6 items-start shadow-sm hover:shadow-md transition-all">
+              <div class="w-14 h-14 rounded-2xl bg-blue-100 text-secondary flex items-center justify-center text-2xl shrink-0 font-black">
+                💰
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">
+                  2. Economia significativa de frete em estruturas e mezaninos
+                </h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                  Contratar serralherias de outras cidades encarece a obra devido ao alto custo de frete de peças pesadas de aço. Com oficina própria em Sorocaba, seu custo logístico é reduzido ao mínimo.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 sm:p-10 border border-gray-200 flex flex-col sm:flex-row gap-6 items-start shadow-sm hover:shadow-md transition-all">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl shrink-0 font-black">
+                ⚡
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">
+                  3. Assistência e manutenção rápida para portões automáticos
+                </h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                  Caso seu portão eletrônico precise de regulagem, substituição de cabo ou ajuste após a instalação, nossa equipe está a poucos minutos de distância para prestar suporte e manutenção sem dias de espera.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 sm:p-10 border border-gray-200 flex flex-col sm:flex-row gap-6 items-start shadow-sm hover:shadow-md transition-all">
+              <div class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center text-2xl shrink-0 font-black">
+                🏢
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">
+                  4. Conhecimento das normas de condomínios fechados em Sorocaba
+                </h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                  Já atuamos nos principais loteamentos e condomínios fechados da cidade (Granja Olga, Ibiti do Paço, Alphaville, Village Vert, Campolim). Conhecemos as exigências de padrão de fachada, horários de obras e regras condominiais.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 sm:p-10 border border-gray-200 flex flex-col sm:flex-row gap-6 items-start shadow-sm hover:shadow-md transition-all">
+              <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-800 flex items-center justify-center text-2xl shrink-0 font-black">
+                🤝
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">
+                  5. Atendimento direto com quem fabrica e instala
+                </h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+                  Você fala diretamente com quem fabrica e instala. Sem intermediários, você tem clareza nas especificações de material, garantindo um produto final com excelente acabamento e alta durabilidade.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         SEÇÃO 5: SERRALHERIA COM ATENDIMENTO ÁGIL EM SOROCABA
+         ========================================== -->
+    <section class="py-24 lg:py-32 bg-gray-900 text-white relative overflow-hidden">
+      <!-- Fundo com padrão sutil -->
+      <div class="absolute inset-0 bg-[radial-gradient(#374151_1px,transparent_1px)] [background-size:20px_20px] opacity-30 pointer-events-none"></div>
+
+      <div class="container mx-auto px-6 md:px-12 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          <div class="lg:col-span-7">
+            <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full mb-6 border border-primary/40">
+              Prontidão & Resposta Imediata
+            </span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-6">
+              Serralheria com Atendimento Ágil em Sorocaba
+            </h2>
+            <p class="text-base sm:text-lg text-gray-300 leading-relaxed mb-8">
+              Sabemos que um chamado para conserto de portão de ferro ou solda emergencial exige prontidão. Por isso, organizamos nossa equipe móvel para oferecer atendimento ágil e resolutivo em todos os bairros de Sorocaba.
+            </p>
+
+            <div class="space-y-4 mb-10">
+              <div class="flex items-start gap-4">
+                <div class="w-8 h-8 rounded-full bg-primary text-accent font-black flex items-center justify-center shrink-0 text-sm">
+                  ✓
+                </div>
+                <div>
+                  <h4 class="text-lg font-bold text-white">Equipes Móveis com Maquinário Portátil</h4>
+                  <p class="text-gray-400 text-sm">Máquinas de solda inversora, ferramentas de corte e insumos para solucionar problemas no local.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="w-8 h-8 rounded-full bg-primary text-accent font-black flex items-center justify-center shrink-0 text-sm">
+                  ✓
+                </div>
+                <div>
+                  <h4 class="text-lg font-bold text-white">Retorno no WhatsApp em Menos de 30 Minutos</h4>
+                  <p class="text-gray-400 text-sm">Envie fotos, medidas ou seu projeto e receba uma prévia de orçamento sem enrolação.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="w-8 h-8 rounded-full bg-primary text-accent font-black flex items-center justify-center shrink-0 text-sm">
+                  ✓
+                </div>
+                <div>
+                  <h4 class="text-lg font-bold text-white">Horários Flexíveis para Visitas e Reparos</h4>
+                  <p class="text-gray-400 text-sm">Atendimento de segunda a sábado com agendamento adaptado à sua disponibilidade.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <a
+                href={SITE_CONFIG.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center px-8 py-5 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all text-center"
+              >
+                Chamar no WhatsApp Agora
+              </a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="bg-gray-800/90 rounded-3xl p-8 sm:p-10 border border-gray-700 backdrop-blur-md shadow-2xl">
+              <h3 class="text-2xl font-black text-white mb-6 tracking-tight flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-primary animate-ping"></span>
+                Status Operacional
+              </h3>
+
+              <div class="space-y-6">
+                <div class="p-5 rounded-2xl bg-gray-900/80 border border-gray-700">
+                  <p class="text-xs uppercase font-bold text-primary tracking-wider mb-1">Tempo Médio de Resposta</p>
+                  <p class="text-2xl font-black text-white">Imediato via WhatsApp</p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-gray-900/80 border border-gray-700">
+                  <p class="text-xs uppercase font-bold text-primary tracking-wider mb-1">Visita Técnica para Medição</p>
+                  <p class="text-2xl font-black text-white">Em até 24 Horas</p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-gray-900/80 border border-gray-700">
+                  <p class="text-xs uppercase font-bold text-primary tracking-wider mb-1">Região de Atuação</p>
+                  <p class="text-base font-semibold text-gray-200">100% dos Bairros de Sorocaba e Votorantim</p>
+                </div>
+              </div>
+
+              <div class="mt-8 pt-6 border-t border-gray-700 text-center">
+                <p class="text-xs text-gray-400">
+                  Oficina equipada e equipes prontas para atender seu chamado com segurança.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         SEÇÃO 6: PERGUNTAS FREQUENTES (FAQ)
+         ========================================== -->
+    <section class="py-24 lg:py-32 bg-white border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-accent font-black text-xs uppercase tracking-widest rounded-full mb-4">
+            Tire Suas Dúvidas
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight mb-4">
+            Perguntas Frequentes Sobre Serralheria em Sorocaba
+          </h2>
+          <p class="text-base sm:text-lg text-gray-600">
+            Confira as respostas para as principais dúvidas sobre orçamentos, prazos, tipos de ferro e processos de fabricação.
+          </p>
+        </div>
+
+        <div class="max-w-3xl mx-auto space-y-4">
+          {faqs.map((faq, index) => (
+            <details class="group bg-gray-50 rounded-2xl border border-gray-200 p-6 [&_summary::-webkit-details-marker]:hidden transition-all duration-300 open:bg-amber-50/50 open:border-primary/60">
+              <summary class="flex items-center justify-between cursor-pointer font-bold text-gray-900 text-base sm:text-lg gap-4 select-none">
+                <span class="flex items-center gap-3">
+                  <span class="text-sm font-black text-secondary">0{index + 1}.</span>
+                  <span>{faq.pergunta}</span>
+                </span>
+                <span class="transition-transform duration-300 group-open:-rotate-180 text-gray-500 shrink-0">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </span>
+              </summary>
+              <div class="mt-4 pt-4 border-t border-gray-200/80 text-sm sm:text-base text-gray-600 leading-relaxed">
+                {faq.resposta}
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <div class="mt-12 text-center">
+          <p class="text-gray-600 text-sm sm:text-base mb-4">
+            Tem outra dúvida específica para seu projeto?
+          </p>
+          <a
+            href={SITE_CONFIG.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 font-bold text-secondary hover:text-blue-900 hover:underline"
+          >
+            Fale agora com nosso mestre serralheiro
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         SEÇÃO 7: AVALIAÇÕES DE CLIENTES SATISFEITOS EM SOROCABA
+         ========================================== -->
+    <section class="py-24 lg:py-32 bg-gray-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-3xl mb-16">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-accent font-black text-xs uppercase tracking-widest rounded-full mb-4">
+            Opinião Real de Quem Contratou
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+            Avaliações de Clientes sobre Nossa Serralheria em Sorocaba
+          </h2>
+          <p class="text-base sm:text-lg text-gray-600 mt-4 leading-relaxed">
+            Veja o que moradores e empresas de diversos bairros de Sorocaba dizem sobre nossos serviços de serralheria, portões e solda.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {avaliacoes.map((item) => (
+            <div class="bg-white rounded-3xl border border-gray-200 p-8 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div>
+                <!-- Estrelas -->
+                <div class="flex items-center gap-1 text-primary mb-4">
+                  {Array.from({ length: item.estrelas }).map(() => (
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                  <span class="text-xs font-bold text-gray-400 ml-2">{item.tempo}</span>
+                </div>
+
+                <p class="text-sm sm:text-base text-gray-700 leading-relaxed italic mb-6">
+                  "{item.texto}"
+                </p>
+              </div>
+
+              <div class="pt-6 border-t border-gray-100 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-secondary text-primary font-black flex items-center justify-center shrink-0 text-base shadow-sm">
+                  {item.nome.charAt(0)}
+                </div>
+                <div>
+                  <h4 class="text-base font-bold text-gray-900">{item.nome}</h4>
+                  <p class="text-xs text-gray-500 font-medium">{item.bairro}</p>
+                  <span class="inline-block text-[11px] font-semibold text-secondary mt-0.5">
+                    Serviço: {item.servico}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Selo de Avaliação do Google -->
+        <div class="relative mt-16 bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900 text-white rounded-3xl border border-gray-800 p-8 max-w-2xl mx-auto shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left overflow-hidden">
+          <div class="relative z-10 flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary font-black text-2xl shrink-0 shadow-inner">
+              ★
+            </div>
+            <div>
+              <p class="text-2xl font-black text-white">4.9 / 5.0 no Google</p>
+              <p class="text-xs sm:text-sm text-gray-300 font-medium">Mais de 120 avaliações de clientes em Sorocaba</p>
+            </div>
+          </div>
+          <a
+            href={SITE_CONFIG.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="relative z-10 text-xs sm:text-sm font-black text-accent bg-primary hover:bg-yellow-400 px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 shrink-0"
+          >
+            Seja Nosso Próximo Cliente Satisfeito
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         SEÇÃO 8: PRINCIPAIS BAIRROS ATENDIDOS EM SOROCABA + GOOGLE MAPS COMPACTO
+         ========================================== -->
+    <section class="py-24 lg:py-32 bg-white border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        
+        <!-- Cabeçalho da Seção de Bairros -->
+        <div class="max-w-4xl mx-auto text-center mb-16">
+          <span class="inline-block py-1.5 px-4 bg-secondary/10 text-secondary font-black text-xs uppercase tracking-widest rounded-full mb-4">
+            Cobertura Completa em Toda a Cidade
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight mb-6">
+            Principais Bairros Atendidos por Nossa Serralheria em Sorocaba
+          </h2>
+          <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
+            Nossa equipe técnica atende com visita pontual em todas as zonas de Sorocaba: Norte, Sul, Leste, Oeste e Centro. Veja a lista completa dos bairros e regiões atendidas:
+          </p>
+        </div>
+
+        <!-- Grade com a lista de todos os bairros fornecidos -->
+        <div class="max-w-6xl mx-auto mb-20 bg-gray-50 rounded-3xl p-8 sm:p-12 border border-gray-200 shadow-inner">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-3">
+            {bairrosAtendidos.map((bairro) => (
+              <a
+                href={`/bairros/${bairro.slug}`}
+                class="flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-secondary hover:translate-x-1 transition-all py-1 border-b border-gray-200/60 group"
+                title={`Serralheria ${formatBairroLocacao(bairro)}`}
+              >
+                <svg class="w-3.5 h-3.5 text-primary shrink-0 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                </svg>
+                <span>{bairro.nomeCompleto}</span>
+              </a>
+            ))}
+          </div>
+
+          <div class="mt-10 pt-6 border-t border-gray-200 text-center text-xs sm:text-sm text-gray-500 font-medium">
+            Não encontrou seu bairro listado acima? Fique tranquilo! Atendemos toda a cidade de Sorocaba, Votorantim e condomínios de toda a região.
+          </div>
+        </div>
+
+        <!-- Subseção: Mapa do Google Maps (Compacto conforme solicitado) -->
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-8">
+            <span class="inline-block py-1 px-3.5 bg-gray-100 text-gray-700 font-bold text-xs uppercase tracking-wider rounded-full mb-3">
+              Localização Estratégica
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+              Serralheria em Sorocaba no Mapa
+            </h3>
+            <p class="text-sm text-gray-500 mt-2">
+              Atendimento com base operacional ágil para deslocamento imediato em Sorocaba e arredores.
+            </p>
+          </div>
+
+          <!-- Container do Mapa do Google Maps - Altura compacta (h-80 = 320px) -->
+          <div class="relative w-full h-80 rounded-3xl overflow-hidden border-2 border-gray-200 shadow-lg bg-gray-100">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117066.8656608553!2d-47.5317761!3d-23.4969241!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c58ab26330559f%3A0x6ff00e57ba5fdca2!2sSorocaba%2C%20SP!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+              width="100%"
+              height="100%"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Mapa de Atendimento da Serralheria em Sorocaba-SP"
+              class="w-full h-full"
+            ></iframe>
+          </div>
+
+          <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-gray-600 bg-gray-50 p-5 rounded-2xl border border-gray-200">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span>{SITE_CONFIG.address.fullAddress}</span>
+            </div>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONFIG.address.fullAddress)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-bold text-secondary hover:underline inline-flex items-center gap-1"
+            >
+              Abrir no Google Maps
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</Layout>

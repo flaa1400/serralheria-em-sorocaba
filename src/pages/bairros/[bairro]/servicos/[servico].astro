@@ -1,0 +1,646 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../../../layouts/Layout.astro';
+import { SITE_CONFIG } from '../../../../data/config';
+import { servicosOferecidos, type ServicoItem } from '../../../../data/servicos';
+import {
+  bairrosAtendidosData,
+  formatBairroLocacao,
+  formatBairroServico,
+  type BairroItem
+} from '../../../../data/bairros';
+import {
+  getContextoServicoBairro,
+  getTituloSecaoExplicativa
+} from '../../../../data/servicosBairrosContext';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const bairro of bairrosAtendidosData) {
+    for (const servico of servicosOferecidos) {
+      if (servico.slug) {
+        paths.push({
+          params: { bairro: bairro.slug, servico: servico.slug },
+          props: { bairro, servico },
+        });
+      }
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  bairro: BairroItem;
+  servico: ServicoItem;
+}
+
+const { bairro, servico } = Astro.props;
+
+const locacaoTexto = formatBairroLocacao(bairro);
+const tituloServicoBairro = formatBairroServico(servico.nome, bairro);
+
+// Nomes limpos e naturais sem repetições
+const nomeLimpo = servico.nome
+  .replace(/\s+em Sorocaba$/i, "")
+  .replace(/\s+Sorocaba$/i, "")
+  .trim();
+const locSimples = `${bairro.preposicao} ${bairro.nome}`;
+const tituloSecaoExplicativa = getTituloSecaoExplicativa(servico.nome, bairro);
+
+const metaTitle = `${tituloServicoBairro} | ${bairro.destaqueFoco}`;
+const metaDesc = `Procurando ${tituloServicoBairro}? ${servico.descricao} Fabricação sob medida com aço galvanizado e visita técnica sem compromisso em ${bairro.nome}.`;
+
+// Mensagem padronizada da Home
+const whatsappUrl = SITE_CONFIG.whatsappUrl;
+
+// Dados contextuais originais e não duplicados calculados para esta combinação (serviço + bairro + perfil)
+const contexto = getContextoServicoBairro(servico, bairro);
+
+// Tenta renderizar o conteúdo rico do markdown correspondente (Componente com inicial maiúscula para o JSX do Astro)
+let RenderedContent = null;
+if (servico.slug) {
+  try {
+    const entry = await getEntry('servicos', servico.slug);
+    if (entry) {
+      const { Content } = await entry.render();
+      RenderedContent = Content;
+    }
+  } catch (e) {
+    RenderedContent = null;
+  }
+}
+
+// Outros serviços no mesmo bairro para navegação cruzada
+const outrosServicos = servicosOferecidos
+  .filter((s) => s.slug !== servico.slug)
+  .slice(0, 6);
+
+// Bairros vizinhos para o mesmo serviço (Interlinking SEO geográfico)
+const bairrosVizinhos = bairrosAtendidosData
+  .filter((b) => b.slug !== bairro.slug)
+  .slice(0, 8);
+---
+
+<Layout title={metaTitle} description={metaDesc}>
+  <main class="bg-slate-50">
+    <!-- 1. BREADCRUMBS -->
+    <nav aria-label="Navegação Estrutural" class="bg-gray-900 border-b border-gray-800 text-xs py-3 text-gray-400">
+      <div class="container mx-auto px-6 md:px-12 flex flex-wrap items-center gap-2">
+        <a href="/" class="hover:text-primary transition-colors">Início</a>
+        <span>/</span>
+        <a href={`/bairros/${bairro.slug}`} class="hover:text-primary transition-colors">{bairro.nome}</a>
+        <span>/</span>
+        <a href={`/bairros/${bairro.slug}/servicos`} class="hover:text-primary transition-colors">Serviços</a>
+        <span>/</span>
+        <span class="text-primary font-bold truncate max-w-[200px] sm:max-w-none">{servico.nome}</span>
+      </div>
+    </nav>
+
+    <!-- 2. HERO VARIADO CONFORME O LAYOUT DO BAIRRO (1, 2, 3 ou 4) -->
+    {bairro.layoutVariant === 1 && (
+      <!-- HERO VARIANTE 1: CENTRALIZADO COM SELO INDUSTRIAL -->
+      <section class="relative bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white py-16 lg:py-24 border-b border-gray-800 overflow-hidden">
+        <div class="container mx-auto px-6 md:px-12 relative z-10 text-center max-w-4xl mx-auto">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full border border-primary/40 shadow-inner mb-6">
+            Atendimento Técnico {locacaoTexto}
+          </span>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-6">
+            {tituloServicoBairro}
+          </h1>
+          <p class="text-base sm:text-xl text-gray-300 leading-relaxed font-normal max-w-3xl mx-auto mb-10">
+            {servico.descricao} {contexto.textoContexto}
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full sm:w-auto inline-flex items-center justify-center px-9 py-5 text-base sm:text-lg font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/25 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <svg class="w-6 h-6 mr-3 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+              Solicitar Orçamento no WhatsApp
+            </a>
+            <a
+              href={`/bairros/${bairro.slug}`}
+              class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-5 text-base font-bold text-white bg-gray-800 hover:bg-gray-700 rounded-2xl border border-gray-700 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              Página de {bairro.nome}
+            </a>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-6 border-t border-gray-800 text-left">
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">100%</span>
+              <span class="text-xs text-gray-400">Aço Galvanizado Usina</span>
+            </div>
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">Zero</span>
+              <span class="text-xs text-gray-400">Taxa de Visita no Bairro</span>
+            </div>
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">MIG/MAG</span>
+              <span class="text-xs text-gray-400">Soldagem Contínua</span>
+            </div>
+            <div class="p-4 bg-gray-900/60 rounded-2xl border border-gray-800">
+              <span class="text-2xl font-black text-primary block">+15 Anos</span>
+              <span class="text-xs text-gray-400">Tradição em Sorocaba</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {bairro.layoutVariant === 2 && (
+      <!-- HERO VARIANTE 2: HERO TÉCNICO COM DEGRADÊ SLATE -->
+      <section class="relative bg-gradient-to-r from-slate-950 via-gray-900 to-zinc-950 text-white py-16 lg:py-24 border-b border-gray-800">
+        <div class="container mx-auto px-6 md:px-12 max-w-5xl">
+          <div class="space-y-6">
+            <span class="inline-block py-1 px-3.5 bg-amber-400/20 text-primary font-bold text-xs uppercase tracking-wider rounded-lg border border-primary/30">
+              Projeto Técnico em Aço Galvanizado
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+              {tituloServicoBairro}
+            </h1>
+            <p class="text-base sm:text-lg text-gray-300 leading-relaxed font-normal max-w-3xl">
+              {servico.descricao} {contexto.textoContexto}
+            </p>
+            <div class="pt-2 flex flex-wrap gap-4">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center px-8 py-4 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+              >
+                Orçamento no WhatsApp
+              </a>
+              <a
+                href={`/bairros/${bairro.slug}/servicos`}
+                class="inline-flex items-center justify-center px-6 py-4 text-sm font-bold text-gray-200 bg-gray-800/80 hover:bg-gray-700 rounded-xl border border-gray-700 transition-all"
+              >
+                Outros Serviços em {bairro.nome}
+              </a>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-gray-800">
+              <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+                <span class="text-xl font-black text-primary block">Gerdau/CSN</span>
+                <span class="text-xs text-gray-400">Matéria-Prima</span>
+              </div>
+              <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+                <span class="text-xl font-black text-primary block">Sem Custo</span>
+                <span class="text-xs text-gray-400">Medição in Loco</span>
+              </div>
+              <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+                <span class="text-xl font-black text-primary block">Gabarito</span>
+                <span class="text-xs text-gray-400">Precisão Milimétrica</span>
+              </div>
+              <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+                <span class="text-xl font-black text-primary block">Fábrica</span>
+                <span class="text-xs text-gray-400">Sem Intermediários</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {bairro.layoutVariant === 3 && (
+      <!-- HERO VARIANTE 3: HERO COM DESTAQUE RESIDENCIAL -->
+      <section class="relative bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900 text-white py-16 lg:py-24 border-b border-gray-800 text-center">
+        <div class="container mx-auto px-6 md:px-12 max-w-4xl">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-black uppercase tracking-wider mb-6">
+            <span>🛡️</span> Garantia de Fábrica & Acabamento Fino
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-6">
+            {tituloServicoBairro}
+          </h1>
+          <p class="text-base sm:text-xl text-gray-300 leading-relaxed font-normal max-w-2xl mx-auto mb-8">
+            {servico.descricao} {contexto.textoContexto}
+          </p>
+          <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-9 py-4 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/25 hover:scale-105 active:scale-95 transition-all"
+            >
+              Falar no WhatsApp
+            </a>
+            <a
+              href={`/bairros/${bairro.slug}`}
+              class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-gray-200 bg-gray-800 hover:bg-gray-700 rounded-2xl border border-gray-700 transition-all"
+            >
+              Voltar para {bairro.nome}
+            </a>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-4 border-t border-gray-800 text-left">
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">100% Galv.</span>
+              <span class="text-xs text-gray-400">Proteção Anticorrosiva</span>
+            </div>
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">Gratuita</span>
+              <span class="text-xs text-gray-400">Visita em {bairro.nome}</span>
+            </div>
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">Fino</span>
+              <span class="text-xs text-gray-400">Desbaste sem Rebarbas</span>
+            </div>
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">Garantia</span>
+              <span class="text-xs text-gray-400">Suporte Pós-Venda</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {bairro.layoutVariant === 4 && (
+      <!-- HERO VARIANTE 4: HERO COMERCIAL / DINÂMICO -->
+      <section class="relative bg-gradient-to-r from-gray-950 via-slate-900 to-gray-950 text-white py-16 lg:py-24 border-b border-gray-800">
+        <div class="container mx-auto px-6 md:px-12 text-center max-w-4xl">
+          <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full border border-primary/40 mb-6">
+            Instalação e Suporte Técnico Especializado
+          </span>
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-6">
+            {tituloServicoBairro}
+          </h1>
+          <p class="text-base sm:text-lg text-gray-300 leading-relaxed font-normal max-w-3xl mx-auto mb-8">
+            {servico.descricao} {contexto.textoContexto}
+          </p>
+          <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-8 py-4 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+            >
+              Solicitar Orçamento
+            </a>
+            <a
+              href={`/bairros/${bairro.slug}/servicos`}
+              class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-gray-800 hover:bg-gray-700 rounded-2xl border border-gray-700 transition-all"
+            >
+              Catálogo de Serviços
+            </a>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-4 border-t border-gray-800 text-left">
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">Aço CSN</span>
+              <span class="text-xs text-gray-400">Qualidade Certificada</span>
+            </div>
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">0 Reais</span>
+              <span class="text-xs text-gray-400">Taxa de Orçamento</span>
+            </div>
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">Solda MIG</span>
+              <span class="text-xs text-gray-400">Alta Resistência</span>
+            </div>
+            <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800">
+              <span class="text-lg font-black text-primary block">Rápido</span>
+              <span class="text-xs text-gray-400">Pontualidade no Bairro</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 3. DETALHES TÉCNICOS & CONTEÚDO CENTRAL DO SERVIÇO -->
+    <section class="py-16 lg:py-24 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+
+          <!-- Coluna Principal: Artigo Técnico Renderizado -->
+          <div class="lg:col-span-8 bg-white rounded-3xl border border-gray-200/90 p-8 sm:p-12 shadow-sm space-y-8">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-2">
+                Padrão de Fabricação & Instalação
+              </span>
+              <h2 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+                {tituloSecaoExplicativa}
+              </h2>
+              <p class="text-sm sm:text-base text-gray-600 mt-2 font-normal leading-relaxed">
+                Conheça os detalhes de engenharia, materiais normatizados e como nossa equipe atende seu imóvel {locSimples}:
+              </p>
+            </div>
+
+            <!-- Artigo Técnico Renderizado -->
+            {RenderedContent ? (
+              <div class="prose prose-slate max-w-none prose-headings:font-black prose-headings:text-gray-900 prose-p:text-gray-600 prose-p:leading-relaxed prose-li:text-gray-600 prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-2 [&>h2:first-of-type]:hidden">
+                <RenderedContent />
+              </div>
+            ) : (
+              <div class="space-y-4 text-gray-600 leading-relaxed">
+                <p>
+                  Nossa serralheria conta com maquinário industrial e equipe técnica capacitada para fabricar e instalar <strong>{nomeLimpo} {locSimples}</strong> com o mais alto padrão de qualidade do mercado.
+                </p>
+                <p>
+                  Trabalhamos exclusivamente com perfis de aço estrutural 100% galvanizado (Gerdau e CSN), soldagem industrial contínua de alta penetração e camadas protetivas de primer anticorrosivo antes do acabamento em pintura eletrostática ou esmalte sintético.
+                </p>
+              </div>
+            )}
+
+            <!-- Caixa de Destaque Local do Bairro -->
+            <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-6 sm:p-8 space-y-3">
+              <h3 class="font-black text-gray-900 text-lg">
+                Visita Técnica sem Custo {locSimples}
+              </h3>
+              <p class="text-sm text-gray-700 leading-relaxed font-normal">
+                Para garantir que seu projeto de {nomeLimpo} fique perfeitamente ajustado ao seu imóvel, realizamos visita presencial em {bairro.nome} para medição precisa dos vãos, avaliação de prumos e definição de todos os acabamentos sem nenhum custo ou compromisso.
+              </p>
+              <div class="pt-2">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 text-xs sm:text-sm font-black text-accent bg-primary hover:bg-yellow-400 px-5 py-3 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95"
+                >
+                  Agendar Visita no WhatsApp
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna Lateral: Resumo & Ação Rápida -->
+          <div class="lg:col-span-4 space-y-6">
+            <!-- Card de Contato Direto -->
+            <div class="bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white rounded-3xl p-8 border border-gray-800 shadow-xl space-y-6">
+              <h3 class="text-xl font-black text-white">
+                Fale com o Especialista
+              </h3>
+              <p class="text-sm text-gray-300 leading-relaxed font-normal">
+                Tire dúvidas técnicas, envie fotos do seu vão em {bairro.nome} e receba uma estimativa rápida no WhatsApp.
+              </p>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full inline-flex items-center justify-center p-4 text-sm font-black text-accent bg-primary hover:bg-yellow-400 rounded-xl transition-all shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 text-center"
+              >
+                Chamar no WhatsApp
+              </a>
+              <div class="pt-4 border-t border-gray-800 text-xs text-gray-400 space-y-2">
+                <p>📍 Atendimento ativo em {bairro.nome}</p>
+                <p>⏱️ Resposta rápida no horário comercial</p>
+                <p>📐 Orçamento detalhado e transparente</p>
+                <p>🛡️ Garantia direta de fábrica</p>
+              </div>
+            </div>
+
+            <!-- Outros Serviços no mesmo Bairro -->
+            <div class="bg-white rounded-3xl border border-gray-200/90 p-8 shadow-sm space-y-4">
+              <h4 class="text-base font-black text-gray-900">
+                Outros Serviços {locacaoTexto}
+              </h4>
+              <ul class="space-y-3">
+                {outrosServicos.map((os) => (
+                  <li>
+                    <a
+                      href={`/bairros/${bairro.slug}/servicos/${os.slug}`}
+                      class="flex items-center justify-between text-xs font-semibold text-gray-700 hover:text-secondary hover:translate-x-1 transition-all py-1.5 border-b border-gray-100"
+                    >
+                      <span>{os.nome}</span>
+                      <span class="text-primary font-bold">&rarr;</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div class="pt-2">
+                <a
+                  href={`/bairros/${bairro.slug}/servicos`}
+                  class="text-xs font-bold text-secondary hover:underline"
+                >
+                  Ver todos os serviços em {bairro.nome} &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SEÇÃO CONTEXTUAL E EXCLUSIVA DE APLICAÇÕES PRÁTICAS NO BAIRRO -->
+    <section class="py-16 lg:py-24 bg-white border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-4xl mx-auto text-center mb-14">
+          <span class="inline-block py-1 px-3.5 bg-amber-400/20 text-accent font-bold text-xs uppercase tracking-wider rounded-full mb-3">
+            Casos de Uso & Aplicações
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
+            {contexto.subtituloContexto}
+          </h2>
+          <p class="text-base text-gray-600 mt-4 leading-relaxed font-normal">
+            Conheça as principais demandas e situações reais em que nossos clientes {locacaoTexto} solicitam este serviço:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {contexto.aplicacoes.map((app) => (
+            <div class="bg-slate-50 border border-gray-200/90 rounded-3xl p-8 hover:border-primary hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-amber-100/70 border border-amber-200 flex items-center justify-center text-2xl mb-5 shadow-sm">
+                  {app.icone}
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-3 tracking-tight">
+                  {app.titulo}
+                </h3>
+                <p class="text-sm text-gray-600 leading-relaxed font-normal">
+                  {app.descricao}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FICHA TÉCNICA E ESPECIFICAÇÕES CONSTRUTIVAS -->
+    <section class="py-16 lg:py-24 bg-slate-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12 max-w-5xl">
+        <div class="text-center mb-14">
+          <span class="inline-block py-1 px-3.5 bg-primary/20 text-accent font-bold text-xs uppercase tracking-wider rounded-full mb-3">
+            Padrão Construtivo
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
+            Ficha Técnica de Fabricação para {bairro.nome}
+          </h2>
+          <p class="text-base text-gray-600 mt-3 font-normal">
+            Garantia de segurança, precisão milimétrica e matéria-prima de procedência comprovada:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {contexto.especificacoes.map((esp) => (
+            <div class="bg-white rounded-2xl border border-gray-200/90 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div class="text-2xl mb-3">{esp.icone}</div>
+              <span class="text-xs font-bold uppercase tracking-wider text-gray-500 block mb-1">
+                {esp.rotulo}
+              </span>
+              <h3 class="text-base font-black text-gray-900 mb-2">
+                {esp.valor}
+              </h3>
+              <p class="text-xs text-gray-600 leading-relaxed">
+                {esp.detalhe}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. FLUXO DE ATENDIMENTO TÉCNICO NO BAIRRO (4 PASSOS) -->
+    <section class="py-16 lg:py-24 bg-white border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12 max-w-5xl">
+        <div class="text-center mb-14">
+          <span class="inline-block py-1 px-3.5 bg-amber-400/20 text-accent font-bold text-xs uppercase tracking-wider rounded-full mb-3">
+            Passo a Passo
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
+            Como Funciona o Atendimento Técnico {locacaoTexto}
+          </h2>
+          <p class="text-base text-gray-600 mt-3 font-normal">
+            Do primeiro contato à entrega instalada e testada no seu imóvel:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {contexto.passos.map((p) => (
+            <div class="bg-gray-50 rounded-2xl border border-gray-200/90 p-6 flex flex-col justify-between space-y-4">
+              <div>
+                <span class="text-3xl font-black text-primary block mb-2">{p.numero}</span>
+                <h3 class="font-bold text-gray-900 text-base mb-2">{p.titulo}</h3>
+                <p class="text-xs text-gray-600 leading-relaxed font-normal">{p.descricao}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. DIFERENCIAIS DA NOSSA SERRALHERIA NO BAIRRO -->
+    <section class="py-16 lg:py-24 bg-slate-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12 max-w-5xl">
+        <div class="text-center mb-14">
+          <span class="inline-block py-1 px-3.5 bg-primary/20 text-accent font-bold text-xs uppercase tracking-wider rounded-full mb-3">
+            Vantagens Construtivas
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
+            Por Que Escolher Nossa Oficina {locacaoTexto}
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {contexto.diferenciais.map((dif) => (
+            <div class="bg-white rounded-2xl border border-gray-200/90 p-8 flex items-start gap-5 shadow-sm">
+              <span class="text-3xl shrink-0">{dif.icone}</span>
+              <div>
+                <h3 class="font-black text-gray-900 text-lg mb-2">{dif.titulo}</h3>
+                <p class="text-sm text-gray-600 leading-relaxed font-normal">{dif.descricao}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. PERGUNTAS FREQUENTES (FAQ) ESPECÍFICAS DO SERVIÇO NO BAIRRO -->
+    <section class="py-16 lg:py-24 bg-white border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12 max-w-4xl">
+        <div class="text-center mb-12">
+          <span class="inline-block py-1 px-3.5 bg-primary/20 text-accent font-bold text-xs uppercase tracking-wider rounded-full mb-3">
+            Dúvidas Técnicas
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
+            Perguntas Frequentes sobre {nomeLimpo} {locSimples}
+          </h2>
+          <p class="text-sm sm:text-base text-gray-600 mt-2 font-normal">
+            Respostas transparentes para as dúvidas mais comuns dos nossos clientes em {bairro.nome}:
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          {contexto.faqs.map((faq) => (
+            <div class="bg-gray-50 rounded-2xl border border-gray-200 p-6 sm:p-8 space-y-2">
+              <h3 class="text-base sm:text-lg font-black text-gray-900">
+                {faq.pergunta}
+              </h3>
+              <p class="text-sm sm:text-base text-gray-600 leading-relaxed font-normal">
+                {faq.resposta}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. CTA FINAL WHATSAPP -->
+    <section class="py-16 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white text-center border-b border-gray-800">
+      <div class="container mx-auto px-6 md:px-12 max-w-3xl space-y-6">
+        <span class="inline-block py-1 px-3 bg-primary/20 text-primary text-xs font-black uppercase tracking-widest rounded-full border border-primary/30">
+          Orçamento Rápido e Sem Compromisso
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white">
+          Precisa de {nomeLimpo} {locSimples}?
+        </h2>
+        <p class="text-gray-300 text-sm sm:text-base leading-relaxed font-normal">
+          Converse diretamente com nosso serralheiro pelo WhatsApp, tire dúvidas técnicas e agende uma medição no local sem pagar nenhuma taxa de visita em {bairro.nome}.
+        </p>
+        <div class="pt-2">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center px-10 py-5 text-base sm:text-lg font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/25 hover:scale-105 active:scale-95 transition-all duration-300"
+          >
+            Peça seu Orçamento no WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. INTERLINKING COM OUTROS BAIRROS PARA O MESMO SERVIÇO -->
+    <section class="py-16 bg-slate-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="max-w-4xl mx-auto text-center mb-8">
+          <h3 class="text-xl font-black text-gray-900">
+            {servico.nome} em Outros Bairros de Sorocaba
+          </h3>
+          <p class="text-sm text-gray-500 mt-2">
+            Além de {bairro.nome}, também realizamos este mesmo serviço com visita técnica gratuita em toda a cidade:
+          </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+          {bairrosVizinhos.map((v) => (
+            <a
+              href={`/bairros/${v.slug}/servicos/${servico.slug}`}
+              class="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 hover:border-primary hover:text-secondary hover:scale-105 active:scale-95 transition-all shadow-sm"
+            >
+              <span>📍 {v.nome}</span>
+            </a>
+          ))}
+          <a
+            href={`/servicos/${servico.slug}`}
+            class="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-primary/20 border border-primary/40 text-accent hover:bg-primary transition-all"
+          >
+            Página Principal de {servico.nome} &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

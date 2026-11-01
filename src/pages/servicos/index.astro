@@ -1,0 +1,123 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SITE_CONFIG } from '../../data/config';
+import { servicosOferecidos } from '../../data/servicos';
+---
+
+<Layout
+  title="Serviços de Serralheria em Sorocaba | Catálogo Completo"
+  description="Conheça todos os nossos serviços de serralheria em Sorocaba: portões automáticos, basculantes, mezaninos, coberturas, grades, guarda-corpos e solda sob medida."
+>
+  <main class="bg-slate-50">
+    <!-- 1. HERO DE SERVIÇOS (Fundo escuro industrial de alto contraste) -->
+    <section class="relative bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white py-16 lg:py-24 border-b border-gray-800 overflow-hidden">
+      <div class="container mx-auto px-6 md:px-12 relative z-10 text-center max-w-4xl">
+        <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full mb-6 border border-primary/40 shadow-inner">
+          Catálogo Técnico Completo
+        </span>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-6">
+          Serviços de Serralheria em Sorocaba
+        </h1>
+        <p class="text-base sm:text-xl text-gray-300 leading-relaxed font-normal max-w-2xl mx-auto mb-8">
+          Soluções completas da medição técnica à instalação final. Aço galvanizado, acabamento anticorrosivo e alta durabilidade para Sorocaba e região.
+        </p>
+
+        <!-- Selos Rápidos de Confiança -->
+        <div class="flex flex-wrap justify-center gap-3">
+          <span class="inline-flex items-center text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-gray-800/90 border border-gray-700 text-gray-200">
+            🛡️ Aço Gerdau / CSN 100% Galvanizado
+          </span>
+          <span class="inline-flex items-center text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-gray-800/90 border border-gray-700 text-gray-200">
+            📐 Medição Técnica Sem Custo
+          </span>
+          <span class="inline-flex items-center text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-gray-800/90 border border-gray-700 text-gray-200">
+            ⚡ Atendimento Rápido no WhatsApp
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. GRID DE SERVIÇOS (Fundo suave slate com cards brancos de sombra e hover refinados) -->
+    <section class="py-20 lg:py-28 border-b border-gray-200">
+      <div class="container mx-auto px-6 md:px-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {servicosOferecidos.map((servico) => (
+            <div class="bg-white rounded-3xl border border-gray-200/90 hover:border-primary/70 p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div>
+                <div class="flex items-center justify-between mb-6">
+                  <div class="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center shadow-inner">
+                    <Fragment set:html={servico.svg} />
+                  </div>
+                  {servico.slug && (
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-secondary bg-secondary/10 px-3 py-1 rounded-full">
+                      Página Completa
+                    </span>
+                  )}
+                </div>
+
+                <h2 class="text-xl sm:text-2xl font-black text-gray-900 mb-3 tracking-tight">
+                  {servico.nome}
+                </h2>
+                <p class="text-sm sm:text-base text-gray-600 leading-relaxed mb-6 font-normal">
+                  {servico.descricao}
+                </p>
+              </div>
+
+              <div class="pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
+                {servico.slug ? (
+                  <a
+                    href={`/servicos/${servico.slug}`}
+                    class="inline-flex items-center text-xs font-bold text-secondary hover:underline transition-colors"
+                  >
+                    Ver detalhes completos
+                    <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </a>
+                ) : (
+                  <span class="text-xs font-semibold text-gray-400">
+                    Sorocaba e Região
+                  </span>
+                )}
+                <a
+                  href={SITE_CONFIG.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 text-xs font-black text-accent bg-primary hover:bg-yellow-400 px-4 py-2.5 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95"
+                >
+                  Pedir Orçamento
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Bloco de Conversão CTA no final da página -->
+        <div class="relative mt-20 bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900 rounded-3xl p-10 sm:p-14 text-white text-center shadow-2xl border border-gray-800 max-w-4xl mx-auto overflow-hidden">
+          <div class="relative z-10">
+            <span class="inline-block py-1.5 px-4 bg-primary/20 text-primary font-black text-xs uppercase tracking-widest rounded-full mb-4 border border-primary/40">
+              Visita Técnica Sem Compromisso
+            </span>
+            <h3 class="text-2xl sm:text-4xl font-black mb-4 tracking-tight">
+              Precisa de um Projeto Personalizado em Sorocaba?
+            </h3>
+            <p class="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed font-normal">
+              Nossa equipe vai até o seu imóvel para realizar a medição no local, tirar dúvidas técnicas e apresentar um orçamento detalhado sem custo.
+            </p>
+            <a
+              href={SITE_CONFIG.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-10 py-5 text-base font-black text-accent bg-primary hover:bg-yellow-400 rounded-2xl shadow-xl shadow-primary/25 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              Falar com Serralheiro no WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

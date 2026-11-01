@@ -1,0 +1,57 @@
+---
+import { SITE_CONFIG } from '../data/config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title = `${SITE_CONFIG.businessName} | ${SITE_CONFIG.tagline}`,
+  description = SITE_CONFIG.description,
+  canonicalUrl: propCanonicalUrl,
+  ogImage = `${SITE_CONFIG.siteUrl}/og-image.jpg`,
+  type = 'website',
+} = Astro.props;
+
+// Garante que a URL Canônica sempre aponte para o domínio oficial de produção
+const cleanPathname = Astro.url.pathname.endsWith('/') || Astro.url.pathname.includes('.')
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`;
+const finalCanonicalUrl = propCanonicalUrl || new URL(cleanPathname, SITE_CONFIG.siteUrl).href;
+
+const formattedTitle = title.includes(SITE_CONFIG.businessName) || title.includes('|')
+  ? title
+  : `${title} | ${SITE_CONFIG.businessName}`;
+---
+
+<!-- Título e Meta Tags Básicas -->
+<title>{formattedTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={finalCanonicalUrl} />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={finalCanonicalUrl} />
+<meta property="og:title" content={formattedTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content={SITE_CONFIG.businessName} />
+<meta property="og:locale" content="pt_BR" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={finalCanonicalUrl} />
+<meta name="twitter:title" content={formattedTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Meta Tags Locais / Geográficas para Ranqueamento no Google Maps -->
+<meta name="geo.region" content="BR-SP" />
+<meta name="geo.placename" content="Sorocaba" />
+<meta name="geo.position" content={`${SITE_CONFIG.geo.latitude};${SITE_CONFIG.geo.longitude}`} />
+<meta name="ICBM" content={`${SITE_CONFIG.geo.latitude}, ${SITE_CONFIG.geo.longitude}`} />
